@@ -61,7 +61,6 @@
     "@vercel/kv": "latest",
     "nanoid": "latest",
     "framer-motion": "latest",
-    "tesseract.js": "latest",
     "@supabase/supabase-js": "latest",
     "@react-email/html": "latest",
     "@react-email/button": "latest",
@@ -72,7 +71,9 @@
     "@react-email/container": "latest",
     "@react-email/img": "latest",
     "@supabase/auth-helpers-nextjs": "latest",
-    "resend": "latest"
+    "resend": "latest",
+    "html2canvas": "latest",
+    "tesseract.js": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

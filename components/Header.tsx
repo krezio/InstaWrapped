@@ -75,28 +75,27 @@ export function Header() {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right">
-                  <nav className="flex flex-col space-y-4 mt-4">
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <nav className="flex flex-col space-y-4 mt-8">
                     {navItems.map((item) => (
-                      <Link 
+                      <motion.div
                         key={item.href}
-                        href={item.href} 
-                        className={`text-sm font-medium transition-colors ${
-                          pathname === item.href
-                            ? 'text-rose-500'
-                            : 'text-gray-500 hover:text-gray-900'
-                        }`}
-                        onClick={() => setIsOpen(false)}
+                        whileHover={{ x: 5 }}
+                        whileTap={{ scale: 0.95 }}
                       >
-                        <motion.div
-                          className="flex items-center gap-2"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
+                        <Link 
+                          href={item.href} 
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
+                            pathname === item.href
+                              ? 'text-rose-500 bg-rose-50'
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                          }`}
+                          onClick={() => setIsOpen(false)}
                         >
                           <item.icon className="w-5 h-5" />
-                          <span>{item.label}</span>
-                        </motion.div>
-                      </Link>
+                          <span className="font-medium">{item.label}</span>
+                        </Link>
+                      </motion.div>
                     ))}
                   </nav>
                 </SheetContent>

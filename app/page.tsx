@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Upload, Info, Heart, Clock, MessageCircle, Sparkles, Target, LucideLink, Image, Video, BarChart2, Loader2, HelpCircle } from 'lucide-react'
+import { Upload, Info, Heart, Clock, MessageCircle, Sparkles, Target, LucideLink, Image, Video, BarChart2, Loader2, HelpCircle, LockIcon } from 'lucide-react'
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -20,6 +20,8 @@ import { ScreenshotAnalysis } from '@/components/ScreenshotAnalysis'
 import { useSubscription } from '@/contexts/subscription-context'
 import { SubscriptionModal } from '@/components/subscription-modal'
 import { useState, useEffect } from 'react'
+import { ShareableReport } from '@/components/ShareableReport'
+import { AIChatTips } from '@/components/AIChatTips'
 
 
 export default function Home() {
@@ -498,6 +500,9 @@ export default function Home() {
               <div className="mt-6">
                 <ConversationHighlights highlights={analysis.highlights} />
               </div>
+              <div className="mt-6">
+                <AIChatTips analysis={analysis} />
+              </div>
 
               {/* Free Features */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-children mt-6">
@@ -508,6 +513,13 @@ export default function Home() {
               <div className="mt-6">
                 {renderPremiumFeatures()}
               </div>
+
+              {analysis && (
+                <div className="mt-8">
+                  <h2 className="text-2xl font-bold text-slate-800 mb-4">Shareable Report</h2>
+                  <ShareableReport analysis={analysis} />
+                </div>
+              )}
 
               <div className="mt-8 text-center">
                 <Button
@@ -536,6 +548,24 @@ export default function Home() {
           </Card>
         )}
 
+        {/* Screenshot Analysis Section */}
+        <div className="mt-16">
+          <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Screenshot Analysis</h2>
+          {analysis ? (
+            <ScreenshotAnalysis />
+          ) : (
+            <Card className="bg-white/80 backdrop-blur-sm shadow-xl rounded-3xl border-0 p-8">
+              <div className="text-center">
+                <LockIcon className="w-12 h-12 text-rose-500 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-800 mb-2">Unlock Screenshot Analysis</h3>
+                <p className="text-slate-600">
+                  Use the Chat Export Analysis feature first to unlock Screenshot Analysis capabilities.
+                </p>
+              </div>
+            </Card>
+          )}
+        </div>
+
         {/* Need Help Section */}
         <div className="mt-16 text-center">
           <h2 className="text-3xl font-bold text-slate-800 mb-4">Need Help?</h2>
@@ -549,12 +579,6 @@ export default function Home() {
             <HelpCircle className="w-5 h-5 mr-2" />
             View Guide
           </Link>
-        </div>
-
-        {/* Screenshot Analysis Section */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Screenshot Analysis</h2>
-          <ScreenshotAnalysis />
         </div>
         <SubscriptionModal 
           open={isSubscriptionModalOpen} 

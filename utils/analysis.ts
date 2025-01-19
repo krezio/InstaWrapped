@@ -1,5 +1,6 @@
 import { InstagramChatExport, ChatAnalysis, InstagramMessage } from '@/types/chat-analysis'
 import { analyzeSentiment } from './sentiment';
+import { extractTopics } from './topic-extraction';
 
 // Replace the getEmojis function with a more robust version
 function getEmojis(text: string): string[] {
@@ -45,7 +46,8 @@ export function analyzeChat(chatData: InstagramChatExport): ChatAnalysis {
     longestMessage: { length: 0, date: 0 },
     thousandthMessageDate: null,
     overallMood: 0,
-    highlights: []
+    highlights: [],
+    topicsOverTime: [],
   }
 
   // Sort messages by timestamp to ensure chronological order
@@ -189,6 +191,15 @@ export function analyzeChat(chatData: InstagramChatExport): ChatAnalysis {
     if (message.share) analysis.sharedLinks++;
     if (message.photos) analysis.mediaShared.images++;
     if (message.videos) analysis.mediaShared.videos++;
+
+    // Extract topics from message content
+    const topics = extractTopics(message.content || '');
+    if (topics.length > 0) {
+      analysis.topicsOverTime.push({
+        timestamp: message.timestamp_ms,
+        topics: topics
+      });
+    }
   });
 
   // Calculate average response times
@@ -318,6 +329,26 @@ export function analyzeChat(chatData: InstagramChatExport): ChatAnalysis {
   }
 
   analysis.highlights = highlights;
+
+  // Aggregate topics by month
+  const topicsByMonth = analysis.topicsOverTime.reduce((acc, { timestamp, topics }) => {
+    const monthKey = new Date(timestamp).toISOString().slice(0, 7);
+    if (!acc[monthKey]) {
+      acc[monthKey] = {};
+    }
+    topics.forEach(topic => {
+      acc[monthKey][topic] = (acc[monthKey][topic] || 0) + 1;
+    });
+    return acc;
+  }, {});
+
+  analysis.topicsOverTime = Object.entries(topicsByMonth).map(([month, topics]) => ({
+    month,
+    topics: Object.entries(topics as Record<string, number>)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([topic]) => topic)
+  }));
 
   return analysis;
 }
